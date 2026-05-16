@@ -26,7 +26,7 @@ export const siteConfig: SiteConfig = {
     },
     originRouteQuery: 'Ap Trau, Phuoc Thien, Nhon Trach, Dong Nai, Vietnam',
   },
-  ogImage: '/images/limo-green-white.png',
+  ogImage: '/images/social-share-card.png?v=20260516',
   serviceArea: {
     vi: 'Phục vụ TP. Hồ Chí Minh, sân bay Tân Sơn Nhất, Nhơn Trạch, Đồng Nai và các tuyến liên tỉnh theo lịch hẹn.',
     en: 'Serving Ho Chi Minh City, Tan Son Nhat Airport, Nhon Trach, Dong Nai, and nearby provinces by advance booking.',

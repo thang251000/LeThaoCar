@@ -320,6 +320,7 @@ function buildRouteKey(
 export function PricingSection({ content, locale }: PricingSectionProps) {
   const copy = pricingCopy[locale]
   const sectionCardRef = useRef<HTMLDivElement | null>(null)
+  const tutorialBubbleRef = useRef<HTMLDivElement | null>(null)
   const pickupFieldRef = useRef<HTMLDivElement | null>(null)
   const destinationFieldRef = useRef<HTMLDivElement | null>(null)
   const routeButtonRef = useRef<HTMLDivElement | null>(null)
@@ -339,6 +340,7 @@ export function PricingSection({ content, locale }: PricingSectionProps) {
   const [showRateEditor, setShowRateEditor] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
   const [tutorialStep, setTutorialStep] = useState(0)
+  const [tutorialBubbleHeight, setTutorialBubbleHeight] = useState(0)
   const [tutorialRects, setTutorialRects] = useState<TutorialRects>({
     destination: null,
     pickup: null,
@@ -500,25 +502,55 @@ export function PricingSection({ content, locale }: PricingSectionProps) {
       : tutorialStep === 1
         ? tutorialDestinationText
         : tutorialRouteText
+  const tutorialContainerWidth = sectionCardRef.current?.clientWidth ?? 0
+  const tutorialContainerHeight = sectionCardRef.current?.clientHeight ?? 0
+  const isCompactTutorialLayout = tutorialContainerWidth < 640
+  const measuredTutorialBubbleHeight =
+    tutorialBubbleHeight || (tutorialStep === 2 ? 172 : 104)
   const tutorialCardWidth =
     tutorialStep === 2
-      ? 320
+      ? isCompactTutorialLayout
+        ? Math.min(Math.max(tutorialContainerWidth - 24, 264), 304)
+        : 320
       : activeTutorialRect
         ? Math.min(Math.max(activeTutorialRect.width - 48, 320), 520)
         : 380
-  const tutorialContainerWidth = sectionCardRef.current?.clientWidth ?? 0
   const tutorialBubblePosition = activeTutorialRect
     ? tutorialStep === 2
-      ? {
-          left: Math.max(
-            Math.min(
-              activeTutorialRect.left + activeTutorialRect.width + 24,
-              tutorialContainerWidth - tutorialCardWidth - 12,
+      ? isCompactTutorialLayout
+        ? {
+            left: Math.max(
+              Math.min(
+                activeTutorialRect.left +
+                  activeTutorialRect.width / 2 -
+                  tutorialCardWidth / 2,
+                tutorialContainerWidth - tutorialCardWidth - 12,
+              ),
+              12,
             ),
-            12,
-          ),
-          top: Math.max(activeTutorialRect.top - 18, 12),
-        }
+            top:
+              activeTutorialRect.top - measuredTutorialBubbleHeight - 20 >= 12
+                ? activeTutorialRect.top - measuredTutorialBubbleHeight - 20
+                : Math.max(
+                    Math.min(
+                      activeTutorialRect.top + activeTutorialRect.height + 20,
+                      tutorialContainerHeight -
+                        measuredTutorialBubbleHeight -
+                        12,
+                    ),
+                    12,
+                  ),
+          }
+        : {
+            left: Math.max(
+              Math.min(
+                activeTutorialRect.left + activeTutorialRect.width + 24,
+                tutorialContainerWidth - tutorialCardWidth - 12,
+              ),
+              12,
+            ),
+            top: Math.max(activeTutorialRect.top - 18, 12),
+          }
       : {
           left: Math.max(
             Math.min(
@@ -579,6 +611,25 @@ export function PricingSection({ content, locale }: PricingSectionProps) {
       window.removeEventListener('resize', updateTutorialRects)
     }
   }, [showTutorial])
+
+  useEffect(() => {
+    if (!showTutorial) {
+      setTutorialBubbleHeight(0)
+      return
+    }
+
+    const updateBubbleHeight = () => {
+      setTutorialBubbleHeight(tutorialBubbleRef.current?.offsetHeight ?? 0)
+    }
+
+    const frameId = window.requestAnimationFrame(updateBubbleHeight)
+    window.addEventListener('resize', updateBubbleHeight)
+
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      window.removeEventListener('resize', updateBubbleHeight)
+    }
+  }, [activeTutorialText, showTutorial, tutorialCardWidth, tutorialStep])
 
   const runRouteCalculation = useEffectEvent(
     async (trigger: 'auto' | 'manual' = 'manual') => {
@@ -1071,6 +1122,7 @@ export function PricingSection({ content, locale }: PricingSectionProps) {
                     {tutorialBubblePosition ? (
                       <div
                         className="pointer-events-none absolute z-40"
+                        ref={tutorialBubbleRef}
                         style={{
                           left: tutorialBubblePosition.left,
                           top: tutorialBubblePosition.top,
