@@ -8,7 +8,9 @@ type SeoProps = {
   theme: ThemeMode
 }
 
-const SITE_URL = 'https://lethaocar.web.app'
+const DEFAULT_SITE_URL = 'https://le-thao-car.vercel.app'
+const SITE_URL =
+  import.meta.env.VITE_SITE_URL?.trim().replace(/\/+$/, '') || DEFAULT_SITE_URL
 const OG_IMAGE_WIDTH = '1200'
 const OG_IMAGE_HEIGHT = '630'
 

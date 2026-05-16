@@ -1,11 +1,29 @@
 import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 
 const defaultMapView = '@10.7769,106.7009,11z'
+const defaultSiteUrl = 'https://le-thao-car.vercel.app'
+const defaultOgImagePath = '/images/social-share-card.png?v=20260516'
 
 function getSerpApiKey(env: Record<string, string>) {
   return env.SERPAPI_API_KEY?.trim() || env.VITE_SERPAPI_API_KEY?.trim() || ''
+}
+
+function getSiteUrl(env: Record<string, string>) {
+  return env.VITE_SITE_URL?.trim().replace(/\/+$/, '') || defaultSiteUrl
+}
+
+function buildRobotsTxt(siteUrl: string) {
+  return `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`
+}
+
+function buildSitemapXml(siteUrl: string) {
+  const lastModifiedDate = new Date().toISOString().slice(0, 10)
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${siteUrl}/</loc>\n    <lastmod>${lastModifiedDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>\n`
 }
 
 function createJsonResponse(
@@ -183,11 +201,31 @@ async function proxySerpApiRequest(
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const serpApiKey = getSerpApiKey(env)
+  const siteUrl = getSiteUrl(env)
+  const ogImageUrl = new URL(defaultOgImagePath, siteUrl).toString()
 
   return {
     plugins: [
       react(),
       tailwindcss(),
+      {
+        name: 'seo-static-files',
+        apply: 'build',
+        transformIndexHtml(html) {
+          return html
+            .replaceAll(`${defaultSiteUrl}${defaultOgImagePath}`, ogImageUrl)
+            .replaceAll(defaultSiteUrl, siteUrl)
+        },
+        writeBundle(outputOptions) {
+          const outDir =
+            typeof outputOptions.dir === 'string' ? outputOptions.dir : 'dist'
+          const outputDirectory = resolve(process.cwd(), outDir)
+
+          mkdirSync(outputDirectory, { recursive: true })
+          writeFileSync(resolve(outputDirectory, 'robots.txt'), buildRobotsTxt(siteUrl))
+          writeFileSync(resolve(outputDirectory, 'sitemap.xml'), buildSitemapXml(siteUrl))
+        },
+      },
       {
         name: 'serpapi-dev-proxy',
         configureServer(server) {

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://le-thao-car.vercel.app/sitemap.xml
