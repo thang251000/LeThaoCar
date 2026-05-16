@@ -1,0 +1,253 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lora:wght@500;600;700&display=swap');
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #f4efe8;
+  --bg-alt: #ede7de;
+  --heading: #17202c;
+  --text: #24303d;
+  --muted: #66707d;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-muted: rgba(255, 250, 242, 0.78);
+  --surface-nav: rgba(247, 242, 234, 0.78);
+  --surface-inverse: #0f151d;
+  --text-on-dark: #f7f3ea;
+  --muted-on-dark: rgba(247, 243, 234, 0.68);
+  --border: rgba(20, 29, 39, 0.12);
+  --border-strong: rgba(20, 29, 39, 0.18);
+  --accent: #b79455;
+  --accent-strong: #e0c58b;
+  --accent-soft: rgba(183, 148, 85, 0.16);
+  --navy: #17212d;
+  --zalo-blue: #0068ff;
+  --zalo-blue-strong: #0052cc;
+  --shadow-soft: 0 22px 60px rgba(20, 29, 39, 0.12);
+  --hero-start: #0b1117;
+  --hero-middle: #132132;
+  --hero-end: #0c1118;
+}
+
+.dark {
+  --bg: #0c1117;
+  --bg-alt: #101722;
+  --heading: #f7f0e5;
+  --text: #e7dfd3;
+  --muted: #a6adba;
+  --surface: rgba(22, 29, 38, 0.82);
+  --surface-muted: rgba(17, 23, 31, 0.88);
+  --surface-nav: rgba(14, 20, 28, 0.82);
+  --surface-inverse: #090d12;
+  --text-on-dark: #fbf7ee;
+  --muted-on-dark: rgba(251, 247, 238, 0.66);
+  --border: rgba(241, 229, 205, 0.1);
+  --border-strong: rgba(241, 229, 205, 0.16);
+  --accent: #d8b574;
+  --accent-strong: #f0d7a6;
+  --accent-soft: rgba(216, 181, 116, 0.16);
+  --navy: #18212d;
+  --zalo-blue: #1c74ff;
+  --zalo-blue-strong: #3a88ff;
+  --shadow-soft: 0 26px 70px rgba(0, 0, 0, 0.34);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, rgba(183, 148, 85, 0.12), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(19, 33, 50, 0.06), transparent 30%),
+    linear-gradient(180deg, var(--bg), var(--bg-alt));
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top right, rgba(216, 181, 116, 0.12), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(39, 53, 72, 0.28), transparent 30%),
+    linear-gradient(180deg, var(--bg), #090d12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  color: #0f151d;
+  background: rgba(224, 197, 139, 0.6);
+}
+
+.font-display {
+  font-family: 'Lora', serif;
+}
+
+.section-shell {
+  width: min(100%, 78rem);
+  margin-inline: auto;
+}
+
+.section-padding {
+  padding-block: clamp(4rem, 8vw, 6rem);
+}
+
+.soft-card {
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+  background: linear-gradient(160deg, var(--surface), rgba(255, 255, 255, 0.34));
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(20px);
+}
+
+.dark .soft-card {
+  background: linear-gradient(160deg, var(--surface), rgba(10, 14, 20, 0.52));
+}
+
+.hero-gradient {
+  background:
+    radial-gradient(circle at 78% 22%, rgba(224, 197, 139, 0.16), transparent 20%),
+    radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.1), transparent 24%),
+    linear-gradient(115deg, var(--hero-start), var(--hero-middle) 48%, var(--hero-end));
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 2.25rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.56;
+}
+
+.heading-balance {
+  text-wrap: balance;
+}
+
+.input-shell {
+  min-height: 3.75rem;
+  width: 100%;
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.95rem 1rem;
+  font: inherit;
+  color: var(--text);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.input-shell::placeholder {
+  color: var(--muted);
+}
+
+.input-shell:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(183, 148, 85, 0.12);
+}
+
+.input-shell-error {
+  border-color: rgba(225, 29, 72, 0.42);
+}
+
+input[type='range'] {
+  accent-color: var(--accent);
+}
+
+.range-input {
+  appearance: none;
+  cursor: pointer;
+  height: 0.7rem;
+  border: 1px solid rgba(183, 148, 85, 0.2);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(224, 197, 139, 0.42), rgba(183, 148, 85, 0.9));
+}
+
+.range-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(183, 148, 85, 0.18);
+}
+
+.range-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid rgba(183, 148, 85, 0.92);
+  border-radius: 999px;
+  background: #fffdf8;
+  box-shadow: 0 8px 18px rgba(15, 21, 29, 0.18);
+}
+
+.range-input::-moz-range-track {
+  height: 0.7rem;
+  border: 1px solid rgba(183, 148, 85, 0.2);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(224, 197, 139, 0.42), rgba(183, 148, 85, 0.9));
+}
+
+.range-input::-moz-range-thumb {
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid rgba(183, 148, 85, 0.92);
+  border-radius: 999px;
+  background: #fffdf8;
+  box-shadow: 0 8px 18px rgba(15, 21, 29, 0.18);
+}
+
+.dark .range-input {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(216, 181, 116, 0.88), rgba(131, 99, 47, 0.92));
+}
+
+.dark .range-input::-moz-range-track {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, rgba(216, 181, 116, 0.88), rgba(131, 99, 47, 0.92));
+}
+
+.dark .range-input::-webkit-slider-thumb,
+.dark .range-input::-moz-range-thumb {
+  border-color: rgba(216, 181, 116, 0.95);
+  background: #fbf3e6;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 5.25rem;
+  }
+}

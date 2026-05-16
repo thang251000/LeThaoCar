@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /bookings/{bookingId} {
+      allow read: if false;
+      allow create: if
+        request.resource.data.keys().hasOnly([
+          'name',
+          'phone',
+          'pickup',
+          'destination',
+          'tripDateTime',
+          'notes',
+          'locale',
+          'status',
+          'source',
+          'vehicle',
+          'createdAt'
+        ]) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() >= 2 &&
+        request.resource.data.name.size() <= 80 &&
+        request.resource.data.phone is string &&
+        request.resource.data.phone.matches('^[0-9+() .-]{8,20}$') &&
+        request.resource.data.pickup is string &&
+        request.resource.data.pickup.size() >= 2 &&
+        request.resource.data.pickup.size() <= 180 &&
+        request.resource.data.destination is string &&
+        request.resource.data.destination.size() >= 2 &&
+        request.resource.data.destination.size() <= 180 &&
+        request.resource.data.tripDateTime is string &&
+        request.resource.data.tripDateTime.size() >= 10 &&
+        request.resource.data.tripDateTime.size() <= 40 &&
+        request.resource.data.notes is string &&
+        request.resource.data.notes.size() <= 500 &&
+        (request.resource.data.locale == 'vi' || request.resource.data.locale == 'en') &&
+        request.resource.data.status == 'new' &&
+        request.resource.data.source == 'landing-page' &&
+        request.resource.data.vehicle == 'VinFast Limo Green 7-seat' &&
+        request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+  }
+}
